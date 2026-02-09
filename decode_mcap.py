@@ -4,16 +4,16 @@ from mcap_protobuf.decoder import DecoderFactory
 from mcap.reader import make_reader
 from cloud import protoCloudToNumpy
 
+import cv2
 
-def decodeImage(data):
+def decodeImage(channel, proto_msg):
     print("image: ", proto_msg.width, "x", proto_msg.height, "type: ", proto_msg.type) 
     # JPEG
     if(proto_msg.type == 10):
         # Convert the bytes into a NumPy uint8 array
         nparr = np.frombuffer(proto_msg.data, np.uint8)
-        
+
         # Decode the array into an image (OpenCV format)
-        import cv2
         img = None
         if proto_msg.channels == 3 or proto_msg.channels == 4:
             img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
@@ -25,6 +25,15 @@ def decodeImage(data):
         # debug viz
         # cv2.imshow(channel.topic, img)
         # cv2.waitKey(1)   
+    if(proto_msg.type == 0):
+        # Convert the bytes into a NumPy uint8 array
+        nparr = np.frombuffer(proto_msg.data, np.uint8)
+        # cast array to mat
+        img = nparr.reshape((proto_msg.height, proto_msg.width, proto_msg.channels))
+
+        # debug viz
+        cv2.imshow(channel.topic, img)
+        cv2.waitKey(1)
     else:
         raise TypeError("Unsupported image type: ", proto_msg.type)
 
@@ -45,6 +54,6 @@ if __name__ == "__main__":
         for schema, channel, message, proto_msg in reader.iter_decoded_messages():
             print(f"msg {channel.topic} {schema.name} [{message.log_time}]")
             if(schema.name == "proto.tk.msg.Image"):
-                decodeImage(proto_msg)
+                decodeImage(channel, proto_msg)
             elif(schema.name == "proto.tk.msg.Cloud"):
-                decodeCloud(proto_msg)
+                decodeCloud(channel, proto_msg)
