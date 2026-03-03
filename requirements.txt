@@ -1,0 +1,4 @@
+numpy
+mcap-protobuf-support
+opencv-python
+open3d
