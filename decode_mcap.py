@@ -25,7 +25,7 @@ def decodeImage(channel, proto_msg):
         # debug viz
         # cv2.imshow(channel.topic, img)
         # cv2.waitKey(1)   
-    if(proto_msg.type == 0):
+    elif(proto_msg.type == 0):
         # Convert the bytes into a NumPy uint8 array
         nparr = np.frombuffer(proto_msg.data, np.uint8)
         # cast array to mat
@@ -56,4 +56,4 @@ if __name__ == "__main__":
             if(schema.name == "proto.tk.msg.Image"):
                 decodeImage(channel, proto_msg)
             elif(schema.name == "proto.tk.msg.Cloud"):
-                decodeCloud(channel, proto_msg)
+                decodeCloud(proto_msg)
