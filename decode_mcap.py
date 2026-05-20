@@ -42,6 +42,7 @@ def decodeImage(proto_msg):
     print(np.shape(img))
 
     plt.figure(channel.topic)
+    plt.cla()
     plt.imshow(img)
     plt.axis('off')
     plt.show(block=False)
@@ -62,6 +63,7 @@ def decodeGridmap(data):
     img_extent = [-proto_msg.dimension[0]/2, proto_msg.dimension[0]/2, -proto_msg.dimension[1]/2, proto_msg.dimension[1]/2]
 
     plt.figure(channel.topic)
+    plt.cla()
     plt.imshow(img, extent=img_extent)
     plt.show(block=False)
     plt.pause(0.01)
